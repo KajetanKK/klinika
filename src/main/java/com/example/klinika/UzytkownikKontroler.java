@@ -19,4 +19,9 @@ public class UzytkownikKontroler {
         serwis.zarejestruj(dane.getLogin(), dane.getHaslo());
         return "Zarejestrowano uzytkownika: " + dane.getLogin();
     }
+
+    @PostMapping("/logowanie")
+    public String zaloguj(@RequestBody DaneLogowania dane) {
+        return serwis.zaloguj(dane.getLogin(), dane.getHaslo());
+    }
 }

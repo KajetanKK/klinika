@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 public class UzytkownikSerwis {
     private final UzytkownikRepozytorium repozytorium;
     private final PasswordEncoder passwordEncoder;
+    private final JwtSerwis jwtSerwis;
 
-    public UzytkownikSerwis(UzytkownikRepozytorium repozytorium,  PasswordEncoder passwordEncoder) {
+    public UzytkownikSerwis(UzytkownikRepozytorium repozytorium, PasswordEncoder passwordEncoder, JwtSerwis jwtSerwis) {
         this.repozytorium = repozytorium;
         this.passwordEncoder = passwordEncoder;
+        this.jwtSerwis = jwtSerwis;
     }
 
     public Uzytkownik zarejestruj(String login, String hasloJawne) {
@@ -22,5 +24,19 @@ public class UzytkownikSerwis {
 
         Uzytkownik uzytkownik = new Uzytkownik(login, zahaszowane);
         return repozytorium.save(uzytkownik);
+    }
+
+    public String zaloguj(String login, String hasloJawne) {
+        Uzytkownik uzytkownik = repozytorium.findByLogin(login).orElse(null);
+
+        if (uzytkownik == null) {
+            throw new RuntimeException("Nieprawidlowy login lub haslo");
+        }
+
+        if (!passwordEncoder.matches(hasloJawne, uzytkownik.getHaslo())) {
+            throw new RuntimeException("Nieprawidlowy login lub haslo");
+        }
+
+        return jwtSerwis.wystawToken(login);
     }
 }
