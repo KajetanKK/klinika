@@ -22,17 +22,23 @@ public class JwtSerwis {
         this.waznoscMs = waznoscMs;
     }
 
-    public String wystawToken(String login) {
+    public String wystawToken(String login, String rola) {
         Date teraz = new Date();
         Date wygasa = new Date(teraz.getTime() + waznoscMs);
 
-        return Jwts.builder().subject(login).issuedAt(teraz).expiration(wygasa).signWith(klucz).compact();
+        return Jwts.builder().subject(login).claim("rola", rola).issuedAt(teraz).expiration(wygasa).signWith(klucz).compact();
     }
 
     public String pobierzLogin(String token) {
         Claims dane = Jwts.parser().verifyWith(klucz).build().parseSignedClaims(token).getPayload();
 
         return dane.getSubject();
+    }
+
+    public String pobierzRole(String token) {
+        Claims dane = Jwts.parser().verifyWith(klucz).build().parseSignedClaims(token).getPayload();
+
+        return dane.get("rola", String.class);
     }
 
     public boolean czyPoprawny(String token) {

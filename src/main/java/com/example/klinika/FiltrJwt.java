@@ -31,11 +31,12 @@ public class FiltrJwt extends OncePerRequestFilter {
 
             if (jwtSerwis.czyPoprawny(token)) {
                 String login = jwtSerwis.pobierzLogin(token);
+                String rola = jwtSerwis.pobierzRole(token);
 
                 var uwierzytelnienie = new UsernamePasswordAuthenticationToken(
                         login,
                         null,
-                        AuthorityUtils.NO_AUTHORITIES
+                        AuthorityUtils.createAuthorityList("ROLE_" + rola)
                 );
                 SecurityContextHolder.getContext().setAuthentication(uwierzytelnienie);
             }

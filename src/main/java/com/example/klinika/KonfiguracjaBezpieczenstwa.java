@@ -2,6 +2,7 @@ package com.example.klinika;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,7 @@ public class KonfiguracjaBezpieczenstwa {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/pacjenci/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 ).addFilterBefore(filtrJwt, UsernamePasswordAuthenticationFilter.class);
         return http.build();

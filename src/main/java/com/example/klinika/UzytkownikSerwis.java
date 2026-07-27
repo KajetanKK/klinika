@@ -22,7 +22,7 @@ public class UzytkownikSerwis {
 
         String zahaszowane = passwordEncoder.encode(hasloJawne);
 
-        Uzytkownik uzytkownik = new Uzytkownik(login, zahaszowane);
+        Uzytkownik uzytkownik = new Uzytkownik(login, zahaszowane, "LEKARZ");
         return repozytorium.save(uzytkownik);
     }
 
@@ -37,6 +37,6 @@ public class UzytkownikSerwis {
             throw new RuntimeException("Nieprawidlowy login lub haslo");
         }
 
-        return jwtSerwis.wystawToken(login);
+        return jwtSerwis.wystawToken(login, uzytkownik.getRola());
     }
 }
